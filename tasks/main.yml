@@ -1,0 +1,20 @@
+# golang installation using godeb utility
+- name: download godeb
+  sudo_user: "{{ user }}"
+  get_url:
+    url: "https://godeb.s3.amazonaws.com/godeb-amd64.tar.gz"
+    dest: "{{ home_directory }}/godeb.tar.gz"
+  register: godeb_download
+
+- name: unzip godeb
+  sudo_user: "{{ user }}"
+  shell: "tar -C {{ home_directory }} -zxvf {{ home_directory }}/godeb.tar.gz"
+  when: "godeb_download.changed"
+
+- name: check if go was installed
+  shell: executable=/bin/bash which go; true
+  register: "go_is_installed"
+
+- name: install golang 1.2
+  shell: "{{ home_directory }}/godeb install"
+  when: "go_is_installed is defined and go_is_installed.stdout == ''"
