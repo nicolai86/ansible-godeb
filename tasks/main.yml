@@ -1,13 +1,13 @@
 # golang installation using godeb utility
 - name: download godeb
-  sudo_user: "{{ user }}"
+  sudo_user: $user
   get_url:
-    url: "https://godeb.s3.amazonaws.com/godeb-amd64.tar.gz"
+    url: $godeb_url
     dest: "{{ home_directory }}/godeb.tar.gz"
   register: godeb_download
 
 - name: unzip godeb
-  sudo_user: "{{ user }}"
+  sudo_user: $user
   shell: "tar -C {{ home_directory }} -zxvf {{ home_directory }}/godeb.tar.gz"
   when: "godeb_download.changed"
 
