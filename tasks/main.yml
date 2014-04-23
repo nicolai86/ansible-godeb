@@ -6,7 +6,7 @@
     dest: "/tmp/go1.2.linux-arm~multiarch-armv6-1.tar.gz"
   when: "ansible_architecture == 'armv6l' and (not go.installed or go.version != '{{ go_version }}')"
 
-- action: tar -C /usr/local -xzf /tmp/go1.2.linux-arm~multiarch-armv6-1.tar.gz
+- shell: tar -C /usr/local -xzf /tmp/go1.2.linux-arm~multiarch-armv6-1.tar.gz
   when: "ansible_architecture == 'armv6l' and (not go.installed or go.version != '{{ go_version }}')"
 
 - file:
