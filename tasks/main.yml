@@ -1,20 +1,40 @@
-# golang installation using godeb utility
+- action: go_facts
+
+# armv6 installation (e.g. raspberry pi)
+- get_url:
+    url: "http://dave.cheney.net/paste/go1.2.linux-arm~multiarch-armv6-1.tar.gz"
+    dest: "/tmp/go1.2.linux-arm~multiarch-armv6-1.tar.gz"
+  when: "ansible_architecture == 'armv6l' and (not go.installed or go.version != '{{ go_version }}')"
+
+- action: tar -C /usr/local -xzf /tmp/go1.2.linux-arm~multiarch-armv6-1.tar.gz
+  when: "ansible_architecture == 'armv6l' and (not go.installed or go.version != '{{ go_version }}')"
+
+- file:
+    path: /etc/profile.d/go.sh
+    state: touch
+  when: "ansible_architecture == 'armv6l'"
+
+- lineinfile:
+    dest: /etc/profile.d/go.sh
+    insertafter: BOF
+    regexp: go\/bin
+    line: export PATH=$PATH:/usr/local/go/bin
+    state: present
+  when: "ansible_architecture == 'armv6l'"
+
+# x86_64 installation
 - name: download godeb
   sudo_user: $user
   get_url:
     url: $godeb_url
     dest: "{{ home_directory }}/godeb.tar.gz"
-  register: godeb_download
+  when: "ansible_architecture == 'x86_64' and (not go.installed or go.version != '{{ go_version }}')"
 
 - name: unzip godeb
   sudo_user: $user
   shell: "tar -C {{ home_directory }} -zxvf {{ home_directory }}/godeb.tar.gz"
-  when: "godeb_download.changed"
-
-- name: check if go was installed
-  shell: executable=/bin/bash which go; true
-  register: "go_is_installed"
+  when: "ansible_architecture == 'x86_64' and (not go.installed or go.version != '{{ go_version }}')"
 
 - name: install golang 1.2
   shell: "{{ home_directory }}/godeb install"
-  when: "go_is_installed is defined and go_is_installed.stdout == ''"
+  when: "ansible_architecture == 'x86_64' and (not go.installed or go.version != '{{ go_version }}')"
