@@ -24,14 +24,14 @@
 
 # x86_64 installation
 - name: download godeb
-  sudo_user: $user
+  sudo_user: "{{ user }}"
   get_url:
-    url: $godeb_url
+    url: "{{ godeb_url }}"
     dest: "{{ home_directory }}/godeb.tar.gz"
   when: "ansible_architecture == 'x86_64' and (not go.installed or go.version != '{{ go_version }}')"
 
 - name: unzip godeb
-  sudo_user: $user
+  sudo_user: "{{ user }}"
   shell: "tar -C {{ home_directory }} -zxvf {{ home_directory }}/godeb.tar.gz"
   when: "ansible_architecture == 'x86_64' and (not go.installed or go.version != '{{ go_version }}')"
 
